@@ -1,31 +1,22 @@
 package loginui;
 
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
+
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-//import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 
 
 public class MainUI extends StackPane {
-SplitPane split=new SplitPane();
-ObservableList options=FXCollections.observableArrayList("DON","SLY");
-ListView list=new ListView(options);
+SplitPane splitMain=new SplitPane();
+SplitPane splitHor=new SplitPane();
+ScrollPane topScroll=new ScrollPane();
+ScrollPane bottScroll=new ScrollPane();
+ScrollPane scroll2=new ScrollPane();
 
     public MainUI() {
         final FileChooser fileChooser= new FileChooser();  //the class to getfiles
@@ -62,33 +53,38 @@ ListView list=new ListView(options);
                 menuBar.setMinHeight(40);
                 border.setTop(menuBar);
         
-        
-        
-        //creating scrollpane
-        ScrollPane scroll1=new ScrollPane();
-        ScrollPane scroll2=new ScrollPane();
-        //adding scrollpane to splitpane
        
         Platform.runLater(new Runnable() {
                @Override
                public void run() {
-               split.setDividerPositions(0.30f, 0.70f);
+               splitMain.setDividerPositions(0.30f, 0.70f);
                 }
             });
         menuBar.getStylesheets().addAll(MainUI.class.getResource("Style.css").toExternalForm());
-        scroll1.getStylesheets().addAll(MainUI.class.getResource("Style.css").toExternalForm());        
+        
+        Platform.runLater(new Runnable() {
+               @Override
+               public void run() {
+               splitHor.setDividerPositions(0.6f, 0.4f);
+                }
+            });
+        splitHor.getItems().addAll(topScroll,bottScroll); 
+        splitHor.setOrientation(Orientation.VERTICAL);
+        splitHor.getStylesheets().addAll(MainUI.class.getResource("Style.css").toExternalForm());        
         
         leftScroll();
         RightPane right=new RightPane();
-        //right.rightScroll();
-        //add padding all around 
         setPadding(new Insets(0, 30, 30, 30)); 
     
-        scroll1.setContent(leftScroll());
+        topScroll.setContent(leftScroll());
         scroll2.setContent(right.rightScroll());
-         split.getItems().addAll(scroll1,scroll2);
-        border.setCenter(split);
+        
+        border.setCenter(splitMain);
         getChildren().addAll(border);
+        
+       splitMain.getItems().addAll(splitHor,scroll2);  
+        
+                   
         
     }
    
@@ -175,25 +171,18 @@ ListView list=new ListView(options);
                 final Separator sepHor = new Separator();
                 sepHor.setOrientation(Orientation.HORIZONTAL);
                 
-                //VBox vbox=new VBox(20,hbox1,hbox2,hbox3,hbox4,hbox5,sepHor);
-                
-               //event handler upon mouse click on the hbox
+               
                 hbox2.setOnMouseClicked(e -> {
-                   MyConnect connect=new MyConnect();
-                    System.out.println("It works!better");
-    
-});
-                list.setOnMouseClicked(e -> {
-                   MyConnect connect=new MyConnect();
+                    bottScroll.setContent(CreatedUsers.displayAll());
                     
     
-});
-                
-                list.setMaxSize(100,250);
-                
-                
-                
-                VBox vbox=new VBox(20,hbox1,hbox2,hbox3,hbox4,hbox5,list);
+                });
+                hbox4.setOnMouseClicked(e -> {
+                   scroll2.setContent(Table.table1());
+    
+                });
+                                
+                VBox vbox=new VBox(20,hbox1,hbox2,hbox3,hbox4,hbox5);
             return vbox;
             
             
